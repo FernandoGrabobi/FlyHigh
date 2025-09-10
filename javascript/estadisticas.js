@@ -667,3 +667,419 @@ document.addEventListener('DOMContentLoaded', () => {
     // Carga inicial
     loadAttackData();
 });
+
+//=========================================================//
+// --- LÓGICA PARA LA PESTAÑA DE BLOQUEO ---               //
+//=========================================================//
+document.addEventListener('DOMContentLoaded', () => {
+    if (!document.getElementById('block-table')) return;
+
+    const blockTableBody = document.querySelector('#block-table tbody');
+    const addBlockRowBtn = document.getElementById('add-block-row');
+    const clearBlockDataBtn = document.getElementById('clear-block-data');
+    const exportBlockCsvBtn = document.getElementById('export-block-csv');
+
+    // Elementos del resumen
+    const blockPointsEl = document.getElementById('block-points');
+    const blockPositiveTouchesEl = document.getElementById('block-positive-touches');
+    const blockErrorsEl = document.getElementById('block-errors');
+    const blockTotalEl = document.getElementById('block-total');
+    const blockEfficiencyEl = document.getElementById('block-efficiency');
+    const blockChartsContainer = document.getElementById('block-charts-container');
+
+    const STORAGE_KEY_BLOCK = 'flyHighBlockData';
+
+    // Función para crear una nueva fila de bloqueo
+    const createBlockRow = (data = { player: '', rotation: '', result: '/' }) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><input type="number" class="block-player" min="1" value="${data.player}"></td>
+            <td><input type="number" class="block-rotation" min="1" max="6" value="${data.rotation}"></td>
+            <td>
+                <select class="block-result">
+                    <option value="+" ${data.result === '+' ? 'selected' : ''}>+ (Punto)</option>
+                    <option value="/" ${data.result === '/' ? 'selected' : ''}>/ (Toque Positivo)</option>
+                    <option value="-" ${data.result === '-' ? 'selected' : ''}>- (Error)</option>
+                </select>
+            </td>
+            <td><button class="delete-row-btn">🗑️</button></td>
+        `;
+        row.querySelector('.delete-row-btn').addEventListener('click', () => {
+            row.remove();
+            updateAllBlockStats();
+        });
+        return row;
+    };
+
+    // Función para guardar datos
+    const saveBlockData = () => {
+        const data = [];
+        blockTableBody.querySelectorAll('tr').forEach(row => {
+            data.push({
+                player: row.querySelector('.block-player').value,
+                rotation: row.querySelector('.block-rotation').value,
+                result: row.querySelector('.block-result').value
+            });
+        });
+        localStorage.setItem(STORAGE_KEY_BLOCK, JSON.stringify(data));
+    };
+    
+    // Función para cargar datos
+    const loadBlockData = () => {
+        const data = JSON.parse(localStorage.getItem(STORAGE_KEY_BLOCK));
+        if (data && data.length > 0) {
+            data.forEach(rowData => blockTableBody.appendChild(createBlockRow(rowData)));
+        } else {
+            // Iniciar con 6 filas vacías
+            for (let i = 0; i < 6; i++) {
+                blockTableBody.appendChild(createBlockRow());
+            }
+        }
+        updateAllBlockStats();
+    };
+
+    // Función para calcular y actualizar los totales
+    const updateBlockCalculations = () => {
+        let points = 0, positiveTouches = 0, errors = 0, total = 0;
+        blockTableBody.querySelectorAll('tr').forEach(row => {
+            if (row.querySelector('.block-player').value !== '') {
+                total++;
+                const result = row.querySelector('.block-result').value;
+                if (result === '+') points++;
+                if (result === '/') positiveTouches++;
+                if (result === '-') errors++;
+            }
+        });
+        
+        const efficiencyRaw = total > 0 ? (points / total) : 0;
+        const efficiencyPercent = (efficiencyRaw * 100).toFixed(1) + '%';
+
+        blockPointsEl.textContent = points;
+        blockPositiveTouchesEl.textContent = positiveTouches;
+        blockErrorsEl.textContent = errors;
+        blockTotalEl.textContent = total;
+        blockEfficiencyEl.textContent = efficiencyPercent;
+    };
+
+    // Función para actualizar los gráficos de torta
+    const updateBlockCharts = () => {
+        const playerData = {}; 
+        blockChartsContainer.innerHTML = '';
+
+        blockTableBody.querySelectorAll('tr').forEach(row => {
+            const player = row.querySelector('.block-player').value;
+            if (!player) return;
+
+            if (!playerData[player]) {
+                playerData[player] = { '+': 0, '/': 0, '-': 0 };
+            }
+            
+            const result = row.querySelector('.block-result').value;
+            playerData[player][result]++;
+        });
+
+        if (Object.keys(playerData).length === 0) {
+             blockChartsContainer.innerHTML = '<p class="chart-placeholder">Introduce el número de un jugador en la tabla para ver su gráfico.</p>';
+             return;
+        }
+
+        for (const player in playerData) {
+            const chartWrapper = document.createElement('div');
+            chartWrapper.className = 'player-chart-container';
+            const title = document.createElement('h4');
+            title.textContent = `Jugador #${player}`;
+            const canvas = document.createElement('canvas');
+            chartWrapper.appendChild(title);
+            chartWrapper.appendChild(canvas);
+            blockChartsContainer.appendChild(chartWrapper);
+
+            new Chart(canvas.getContext('2d'), {
+                type: 'pie',
+                data: {
+                    labels: ['Puntos (+)', 'Toques Positivos (/)', 'Errores (-)'],
+                    datasets: [{
+                        data: [ playerData[player]['+'], playerData[player]['/'], playerData[player]['-'] ],
+                        backgroundColor: ['#4CAF50', '#8BC34A', '#F44336'], // Verde, Verde claro, Rojo
+                        hoverOffset: 4
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'top' } } }
+            });
+        }
+    };
+
+    // Función para unificar actualizaciones
+    const updateAllBlockStats = () => {
+        updateBlockCalculations();
+        updateBlockCharts();
+        saveBlockData();
+    };
+
+    // --- Event Listeners ---
+    addBlockRowBtn.addEventListener('click', () => {
+        blockTableBody.appendChild(createBlockRow());
+    });
+
+    clearBlockDataBtn.addEventListener('click', () => {
+        if (confirm('¿Estás seguro de que quieres borrar todos los datos de bloqueo?')) {
+            blockTableBody.innerHTML = '';
+            localStorage.removeItem(STORAGE_KEY_BLOCK);
+            for (let i = 0; i < 6; i++) {
+                blockTableBody.appendChild(createBlockRow());
+            }
+            updateAllBlockStats();
+        }
+    });
+
+    exportBlockCsvBtn.addEventListener('click', () => {
+        let csvContent = "data:text/csv;charset=utf-8,Jugador,Rotacion,Resultado\n";
+        blockTableBody.querySelectorAll('tr').forEach(row => {
+            const playerData = [
+                row.querySelector('.block-player').value,
+                row.querySelector('.block-rotation').value,
+                row.querySelector('.block-result').value,
+            ];
+            if (playerData[0] !== '') {
+                csvContent += playerData.join(',') + "\n";
+            }
+        });
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "estadisticas_bloqueo_flyhigh.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+
+    blockTableBody.addEventListener('input', updateAllBlockStats);
+
+    // Carga inicial
+    loadBlockData();
+});
+//=========================================================//
+// --- LÓGICA PARA LA PESTAÑA K-1 (SIDE-OUT) ---           //
+//=========================================================//
+document.addEventListener('DOMContentLoaded', () => {
+    if (!document.getElementById('k1-table')) return;
+
+    const k1TableBody = document.querySelector('#k1-table tbody');
+    const k1ChartCanvas = document.getElementById('k1-chart');
+    const clearK1DataBtn = document.getElementById('clear-k1-data');
+    const exportK1CsvBtn = document.getElementById('export-k1-csv');
+    let k1Chart;
+
+    const STORAGE_KEY_K1 = 'flyHighK1Data';
+
+    const updateK1Calculations = () => {
+        let totalAttempts = 0, totalPoints = 0, totalErrors = 0;
+        const efficiencyData = [];
+
+        k1TableBody.querySelectorAll('tr').forEach(row => {
+            const inputs = row.querySelectorAll('input');
+            const attempts = parseInt(inputs[0].value) || 0;
+            const points = parseInt(inputs[1].value) || 0;
+            const errors = parseInt(inputs[2].value) || 0;
+            
+            totalAttempts += attempts;
+            totalPoints += points;
+            totalErrors += errors;
+
+            const efficiency = attempts > 0 ? (points / attempts) * 100 : 0;
+            row.querySelector('strong').textContent = efficiency.toFixed(1) + '%';
+            efficiencyData.push(efficiency);
+        });
+
+        document.getElementById('k1-total-attempts').textContent = totalAttempts;
+        document.getElementById('k1-total-points').textContent = totalPoints;
+        document.getElementById('k1-total-errors').textContent = totalErrors;
+        const totalEfficiency = totalAttempts > 0 ? (totalPoints / totalAttempts) * 100 : 0;
+        document.getElementById('k1-total-efficiency').textContent = totalEfficiency.toFixed(1) + '%';
+        
+        updateK1Chart(efficiencyData);
+    };
+
+    const updateK1Chart = (data) => {
+        if (k1Chart) k1Chart.destroy();
+        k1Chart = new Chart(k1ChartCanvas.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Rotación I', 'II', 'III', 'IV', 'V', 'VI'],
+                datasets: [{
+                    label: '% de Side-Out',
+                    data: data,
+                    backgroundColor: 'rgba(65, 90, 119, 0.6)',
+                    borderColor: 'rgba(13, 27, 42, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true, suggestedMax: 100 } }, responsive: true, maintainAspectRatio: false }
+        });
+    };
+
+    const saveK1Data = () => {
+        const data = [];
+        k1TableBody.querySelectorAll('tr').forEach(row => {
+            const inputs = row.querySelectorAll('input');
+            data.push({
+                attempts: inputs[0].value,
+                points: inputs[1].value,
+                errors: inputs[2].value
+            });
+        });
+        localStorage.setItem(STORAGE_KEY_K1, JSON.stringify(data));
+    };
+
+    const loadK1Data = () => {
+        const data = JSON.parse(localStorage.getItem(STORAGE_KEY_K1));
+        if (data) {
+            const rows = k1TableBody.querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                const inputs = row.querySelectorAll('input');
+                inputs[0].value = data[index].attempts || '';
+                inputs[1].value = data[index].points || '';
+                inputs[2].value = data[index].errors || '';
+            });
+        }
+        updateAllK1Stats();
+    };
+    
+    const updateAllK1Stats = () => {
+        updateK1Calculations();
+        saveK1Data();
+    };
+
+    k1TableBody.addEventListener('input', updateAllK1Stats);
+    clearK1DataBtn.addEventListener('click', () => {
+        if(confirm('¿Borrar todos los datos de Análisis K-1?')) {
+            k1TableBody.querySelectorAll('input').forEach(input => input.value = '');
+            updateAllK1Stats();
+        }
+    });
+
+    exportK1CsvBtn.addEventListener('click', () => {
+        let csv = "Rotacion,Total Intentos K-1,Puntos Ganados K-1,Errores K-1,% Side-Out\n";
+        k1TableBody.querySelectorAll('tr').forEach(row => {
+            csv += Array.from(row.children).map(cell => cell.querySelector('input')?.value ?? cell.textContent).join(',') + '\n';
+        });
+        const link = document.createElement("a");
+        link.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+        link.download = 'analisis_k1_flyhigh.csv';
+        link.click();
+    });
+
+    loadK1Data();
+});
+//=========================================================//
+// --- LÓGICA PARA LA PESTAÑA K-2 (BREAK-POINT) ---        //
+//=========================================================//
+document.addEventListener('DOMContentLoaded', () => {
+    if (!document.getElementById('k2-table')) return;
+
+    const k2TableBody = document.querySelector('#k2-table tbody');
+    const k2ChartCanvas = document.getElementById('k2-chart');
+    const clearK2DataBtn = document.getElementById('clear-k2-data');
+    const exportK2CsvBtn = document.getElementById('export-k2-csv');
+    let k2Chart;
+
+    const STORAGE_KEY_K2 = 'flyHighK2Data';
+
+    const updateK2Calculations = () => {
+        let totalAttempts = 0, totalPoints = 0, totalErrors = 0;
+        const efficiencyData = [];
+
+        k2TableBody.querySelectorAll('tr').forEach(row => {
+            const inputs = row.querySelectorAll('input');
+            const attempts = parseInt(inputs[0].value) || 0;
+            const points = parseInt(inputs[1].value) || 0;
+            const errors = parseInt(inputs[2].value) || 0;
+            
+            totalAttempts += attempts;
+            totalPoints += points;
+            totalErrors += errors;
+
+            const efficiency = attempts > 0 ? (points / attempts) * 100 : 0;
+            row.querySelector('strong').textContent = efficiency.toFixed(1) + '%';
+            efficiencyData.push(efficiency);
+        });
+
+        document.getElementById('k2-total-attempts').textContent = totalAttempts;
+        document.getElementById('k2-total-points').textContent = totalPoints;
+        document.getElementById('k2-total-errors').textContent = totalErrors;
+        const totalEfficiency = totalAttempts > 0 ? (totalPoints / totalAttempts) * 100 : 0;
+        document.getElementById('k2-total-efficiency').textContent = totalEfficiency.toFixed(1) + '%';
+        
+        updateK2Chart(efficiencyData);
+    };
+
+    const updateK2Chart = (data) => {
+        if (k2Chart) k2Chart.destroy();
+        k2Chart = new Chart(k2ChartCanvas.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Rotación I', 'II', 'III', 'IV', 'V', 'VI'],
+                datasets: [{
+                    label: '% de Break-Point',
+                    data: data,
+                    backgroundColor: 'rgba(212, 175, 55, 0.6)', // Color dorado de acento
+                    borderColor: 'rgba(212, 175, 55, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true, suggestedMax: 100 } }, responsive: true, maintainAspectRatio: false }
+        });
+    };
+
+    const saveK2Data = () => {
+        const data = [];
+        k2TableBody.querySelectorAll('tr').forEach(row => {
+            const inputs = row.querySelectorAll('input');
+            data.push({
+                attempts: inputs[0].value,
+                points: inputs[1].value,
+                errors: inputs[2].value
+            });
+        });
+        localStorage.setItem(STORAGE_KEY_K2, JSON.stringify(data));
+    };
+
+    const loadK2Data = () => {
+        const data = JSON.parse(localStorage.getItem(STORAGE_KEY_K2));
+        if (data) {
+            const rows = k2TableBody.querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                const inputs = row.querySelectorAll('input');
+                inputs[0].value = data[index].attempts || '';
+                inputs[1].value = data[index].points || '';
+                inputs[2].value = data[index].errors || '';
+            });
+        }
+        updateAllK2Stats();
+    };
+    
+    const updateAllK2Stats = () => {
+        updateK2Calculations();
+        saveK2Data();
+    };
+
+    k2TableBody.addEventListener('input', updateAllK2Stats);
+    clearK2DataBtn.addEventListener('click', () => {
+        if(confirm('¿Borrar todos los datos de Análisis K-2?')) {
+            k2TableBody.querySelectorAll('input').forEach(input => input.value = '');
+            updateAllK2Stats();
+        }
+    });
+
+    exportK2CsvBtn.addEventListener('click', () => {
+        let csv = "Rotacion,Total Oportunidades K-2,Puntos Ganados K-2,Errores K-2,% Break-Point\n";
+        k2TableBody.querySelectorAll('tr').forEach(row => {
+            csv += Array.from(row.children).map(cell => cell.querySelector('input')?.value ?? cell.textContent).join(',') + '\n';
+        });
+        const link = document.createElement("a");
+        link.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+        link.download = 'analisis_k2_flyhigh.csv';
+        link.click();
+    });
+
+    loadK2Data();
+});

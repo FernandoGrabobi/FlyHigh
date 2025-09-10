@@ -131,6 +131,10 @@
                 <h4><span class="code">-</span> (Error)</h4>
                 <p>El saque termina en error, ya sea golpeando la red o saliendo fuera de los límites de la cancha.</p>
             </div>
+            <div class="explanation-item">
+                <h4><span class="code">R</span> (Rotación)</h4>
+                <p>Se toma la posición del armador para determinar en que rotación esta el equipo, si el armador esta en 1 es la rotación 1 del equipo.</p>
+            </div>
         </div>
     </div>
             <!-- Fin SAQUE -->
@@ -212,6 +216,10 @@
             <div class="explanation-item">
                 <h4><span class="code">0</span> (Error)</h4>
                 <p>Error directo en la recepción que resulta en un punto para el equipo contrario.</p>
+            </div>
+            <div class="explanation-item">
+                <h4><span class="code">R</span> (Rotación)</h4>
+                <p>Se toma la posición del armador para determinar en que rotación esta el equipo, si el armador esta en 1 es la rotación 1 del equipo.</p>
             </div>
         </div>
     </div>
@@ -300,26 +308,227 @@
                 <h4><span class="code">B</span> (Bloqueado)</h4>
                 <p>El ataque es bloqueado por el rival, resultando en un punto para ellos.</p>
             </div>
+            <div class="explanation-item">
+                <h4><span class="code">R</span> (Rotación)</h4>
+                <p>Se toma la posición del armador para determinar en que rotación esta el equipo, si el armador esta en 1 es la rotación 1 del equipo.</p>
+            </div>
         </div>
     </div>
             <!--Fin Ataque -->
 
             <!-- Bloqueo -->
-         <div id="Bloqueo" class="tab-content">
-            <h2>Hoja 4: Bloqueo (En construcción)</h2>
+    <div id="Bloqueo" class="tab-content">
+        <div class="stats-header">
+            <h2>Hoja 4: Análisis de Bloqueo</h2>
+            <div class="tooltip">
+                <span class="info-icon">ⓘ</span>
+                <div class="tooltip-text">
+                    <strong>Instrucciones - Resultado del Bloqueo:</strong><br>
+                    - <strong>+</strong> = Punto Directo de bloqueo.<br>
+                    - <strong>/</strong> = Toque Positivo (se puede contraatacar).<br>
+                    - <strong>-</strong> = Error (red, invasión, etc.).
+                </div>
+            </div>
         </div>
+
+        <div class="table-controls">
+            <button id="add-block-row" class="btn btn-primary">Añadir Fila</button>
+            <button id="clear-block-data" class="btn btn-danger">Limpiar Datos</button>
+            <button id="export-block-csv" class="btn btn-secondary">Exportar a CSV</button>
+        </div>
+
+        <div class="stats-table-container">
+            <table id="block-table">
+                <thead>
+                    <tr>
+                        <th># Jugador</th>
+                        <th>Rotación</th>
+                        <th>Resultado</th>
+                        <th>Borrar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Las filas se generarán con JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="stats-summary-grid">
+            <!-- Resumen de Totales -->
+            <div class="summary-card">
+                <h3>Resumen de Bloqueo</h3>
+                <div class="summary-item"><span>Puntos (+):</span> <strong id="block-points">0</strong></div>
+                <div class="summary-item"><span>Toques Positivos (/):</span> <strong id="block-positive-touches">0</strong></div>
+                <div class="summary-item"><span>Errores (-):</span> <strong id="block-errors">0</strong></div>
+                <div class="summary-item total"><span>Total Intentos:</span> <strong id="block-total">0</strong></div>
+                <div class="summary-item efficiency"><span>Eficiencia Puntos:</span> <strong id="block-efficiency">0.0%</strong></div>
+            </div>
+            <!-- Contenedor para los Gráficos de Torta -->
+            <div class="chart-card">
+                <h3>Desglose de Bloqueo por Jugador</h3>
+                <div id="block-charts-container" class="charts-grid-container">
+                    <p class="chart-placeholder">Introduce el número de un jugador en la tabla para ver su gráfico.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Explicación -->
+        <div class="stats-explanation-card">
+            <h3>¿Cómo se evalúa el bloqueo?</h3>
+            <p>El bloqueo es la primera línea de defensa de un equipo. Se mide su capacidad para detener directamente el ataque rival o para suavizarlo y permitir un contraataque.</p>
+            <div class="explanation-item">
+                <h4><span class="code">+</span> (Punto Directo)</h4>
+                <p>El bloqueo detiene el ataque del rival y la pelota cae en su cancha, resultando en un punto directo para tu equipo.</p>
+            </div>
+            <div class="explanation-item">
+                <h4><span class="code">/</span> (Toque Positivo)</h4>
+                <p>El bloqueo no detiene el ataque por completo, pero lo amortigua o desvía, permitiendo que tu defensa recupere la pelota y organice un contraataque.</p>
+            </div>
+            <div class="explanation-item">
+                <h4><span class="code">-</span> (Error)</h4>
+                <p>Se comete un error durante el intento de bloqueo, como tocar la red, invadir el campo contrario por debajo de la red, o tocar una pelota que claramente iba fuera.</p>
+            </div>
+            <div class="explanation-item">
+                <h4><span class="code">R</span> (Rotación)</h4>
+                <p>Se toma la posición del armador para determinar en que rotación esta el equipo, si el armador esta en 1 es la rotación 1 del equipo.</p>
+            </div>
+        </div>
+    </div>
             <!-- Fin Bloqueo -->
 
             <!-- K1 -->
-         <div id="K1" class="tab-content">
-            <h2>Hoja 5: Análisis K-1 (En construcción)</h2>
+    <div id="K1" class="tab-content">
+        <div class="stats-header">
+            <h2>Hoja 5: Análisis COMPLEJO 1 (K-1 Side-Out)</h2>
+            <div class="tooltip">
+                <span class="info-icon">ⓘ</span>
+                <div class="tooltip-text">
+                    <strong>Definición:</strong> Mide la capacidad del equipo para ganar el punto cuando está recibiendo el saque. Un % de Side-Out alto (idealmente >60%) indica una transición eficiente de la recepción al ataque.
+                </div>
+            </div>
         </div>
+
+        <div class="table-controls">
+            <button id="clear-k1-data" class="btn btn-danger">Limpiar Datos</button>
+            <button id="export-k1-csv" class="btn btn-secondary">Exportar a CSV</button>
+        </div>
+
+        <div class="stats-table-container">
+            <table id="k1-table">
+                <thead>
+                    <tr>
+                        <th>Rotación</th>
+                        <th>Total de Intentos en K-1</th>
+                        <th>Puntos Ganados en K-1</th>
+                        <th>Errores en K-1</th>
+                        <th>% de Side-Out</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 6 Filas fijas para las rotaciones -->
+                    <tr><td>I</td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><strong>0.0%</strong></td></tr>
+                    <tr><td>II</td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><strong>0.0%</strong></td></tr>
+                    <tr><td>III</td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><strong>0.0%</strong></td></tr>
+                    <tr><td>IV</td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><strong>0.0%</strong></td></tr>
+                    <tr><td>V</td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><strong>0.0%</strong></td></tr>
+                    <tr><td>VI</td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><strong>0.0%</strong></td></tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>TOTAL</th>
+                        <td id="k1-total-attempts"><strong>0</strong></td>
+                        <td id="k1-total-points"><strong>0</strong></td>
+                        <td id="k1-total-errors"><strong>0</strong></td>
+                        <td id="k1-total-efficiency"><strong>0.0%</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="chart-card" style="margin-top: 30px;">
+            <h3>% de Side-Out por Rotación</h3>
+            <div style="height: 350px;">
+                <canvas id="k1-chart"></canvas>
+            </div>
+        </div>
+
+        <div class="stats-explanation-card">
+            <h3>¿Cómo se evalúa en K1?</h3>
+            <div class="explanation-item">
+                Mide la capacidad del equipo para ganar el punto cuando está recibiendo el saque. Un % de Side-Out alto (idealmente >60%) indica una transición eficiente de la recepción al ataque.
+                <h4><span class="code">R</span> (Rotación)</h4>
+                <p>Se toma la posición del armador para determinar en que rotación esta el equipo, si el armador esta en 1 es la rotación 1 del equipo.</p>
+            </div>
+        </div>
+    </div>
             <!-- Fin K1 -->
 
             <!-- K2 -->
-         <div id="K2" class="tab-content">
-            <h2>Hoja 6: Análisis K-2 (En construcción)</h2>
+    <div id="K2" class="tab-content">
+        <div class="stats-header">
+            <h2>Hoja 6: Análisis COMPLEJO 2 (K-2 Break-Point)</h2>
+            <div class="tooltip">
+                <span class="info-icon">ⓘ</span>
+                <div class="tooltip-text">
+                    <strong>Definición:</strong> Mide la capacidad del equipo para ganar el punto cuando está sacando (a través de la defensa, bloqueo y contraataque). Un % de Break-Point alto es lo que permite ganar sets.
+                </div>
+            </div>
         </div>
+
+        <div class="table-controls">
+            <button id="clear-k2-data" class="btn btn-danger">Limpiar Datos</button>
+            <button id="export-k2-csv" class="btn btn-secondary">Exportar a CSV</button>
+        </div>
+
+        <div class="stats-table-container">
+            <table id="k2-table">
+                <thead>
+                    <tr>
+                        <th>Rotación</th>
+                        <th>Total Oportunidades de K-2</th>
+                        <th>Puntos Ganados en K-2</th>
+                        <th>Errores en K-2</th>
+                        <th>% de Break-Point</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 6 Filas fijas para las rotaciones -->
+                    <tr><td>I</td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><strong>0.0%</strong></td></tr>
+                    <tr><td>II</td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><strong>0.0%</strong></td></tr>
+                    <tr><td>III</td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><strong>0.0%</strong></td></tr>
+                    <tr><td>IV</td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><strong>0.0%</strong></td></tr>
+                    <tr><td>V</td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><strong>0.0%</strong></td></tr>
+                    <tr><td>VI</td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><input type="number" min="0"></td><td><strong>0.0%</strong></td></tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>TOTAL</th>
+                        <td id="k2-total-attempts"><strong>0</strong></td>
+                        <td id="k2-total-points"><strong>0</strong></td>
+                        <td id="k2-total-errors"><strong>0</strong></td>
+                        <td id="k2-total-efficiency"><strong>0.0%</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="chart-card" style="margin-top: 30px;">
+            <h3>% de Break-Point por Rotación</h3>
+            <div style="height: 350px;">
+                <canvas id="k2-chart"></canvas>
+            </div>
+        </div>
+
+         <div class="stats-explanation-card">
+            <h3>¿Cómo se evalúa en K2?</h3>
+            <div class="explanation-item">
+                Mide la capacidad del equipo para ganar el punto cuando está sacando (a través de la defensa, bloqueo y contraataque). Un % de Break-Point alto es lo que permite ganar sets.
+                <h4><span class="code">R</span> (Rotación)</h4>
+                <p>Se toma la posición del armador para determinar en que rotación esta el equipo, si el armador esta en 1 es la rotación 1 del equipo.</p>
+            </div>
+        </div>
+
+    </div>
             <!-- Fin K2 -->
     </main>
     
