@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas - FlyHigh</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Librería para Gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <a href="../html/index.html" class="logo-link">
+                <img src="../assets/logo.png" alt="FlyHigh Logo" class="logo">
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="./estadisticas.html">Estadísticas</a></li>
+                    <li><a href="#">SobreVoley</a></li>
+                    <li><a href="#">Tienda</a></li>
+                    <li><a href="#">Próximamente</a></li>
+                </ul>
+            </nav>
+            <div class="language-switcher">
+                <button class="lang-btn" data-lang="es">ES</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+            <button class="mobile-menu-toggle">☰</button>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <h1 class="dashboard-title">Dashboard de Estadísticas</h1>
+
+        <!-- Navegación de Pestañas -->
+        <div class="tabs-nav">
+            <button class="tab-link active" onclick="openTab(event, 'Saque')">Saque</button>
+            <button class="tab-link" onclick="openTab(event, 'Recepcion')">Recepción</button>
+            <button class="tab-link" onclick="openTab(event, 'Ataque')">Ataque</button>
+            <button class="tab-link" onclick="openTab(event, 'Bloqueo')">Bloqueo</button>
+            <button class="tab-link" onclick="openTab(event, 'K1')">Análisis K-1</button>
+            <button class="tab-link" onclick="openTab(event, 'K2')">Análisis K-2</button>
+        </div>
+
+            <!-- SAQUE -->
+    <div id="Saque" class="tab-content active">
+        <div class="stats-header">
+            <h2>Hoja 1: Análisis de Saque</h2>
+            <div class="tooltip">
+                <span class="info-icon">ⓘ</span>
+                <div class="tooltip-text">
+                    <strong>Instrucciones:</strong><br>
+                    - <strong>Tipo:</strong> F=Flotante, S=Saque en Salto.<br>
+                    - <strong>Zona:</strong> 1 a 6.<br>
+                    - <strong>Resultado:</strong><br>
+                    &nbsp;&nbsp;<strong>++</strong> = Ace (Punto directo)<br>
+                    &nbsp;&nbsp;<strong>+</strong> = Positivo (Rival no ataca rápido)<br>
+                    &nbsp;&nbsp;<strong>/</strong> = Neutral (Rival organiza ataque)<br>
+                    &nbsp;&nbsp;<strong>-</strong> = Error (Fuera o red)
+                </div>
+            </div>
+        </div>
+
+        <div class="table-controls">
+            <button id="add-serve-row" class="btn btn-primary">Añadir Fila</button>
+            <button id="clear-serve-data" class="btn btn-danger">Limpiar Datos</button>
+            <button id="export-serve-csv" class="btn btn-secondary">Exportar a CSV</button>
+        </div>
+
+        <div class="stats-table-container">
+            <table id="serve-table">
+                <thead>
+                    <tr>
+                        <th># Jugador</th>
+                        <th>Rotación</th>
+                        <th>Tipo (F/S)</th>
+                        <th>Zona (1-6)</th>
+                        <th>Resultado</th>
+                        <th>Borrar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Las filas se generarán con JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="stats-summary-grid">
+            <!-- Resumen de Totales -->
+            <div class="summary-card">
+                <h3>Resumen de Saques</h3>
+                <div class="summary-item"><span>Aces (++):</span> <strong id="serve-aces">0</strong></div>
+                <div class="summary-item"><span>Positivos (+):</span> <strong id="serve-positives">0</strong></div>
+                <div class="summary-item"><span>Neutrales (/):</span> <strong id="serve-neutrals">0</strong></div>
+                <div class="summary-item"><span>Errores (-):</span> <strong id="serve-errors">0</strong></div>
+                <div class="summary-item total"><span>Total Saques:</span> <strong id="serve-total">0</strong></div>
+                <div class="summary-item efficiency"><span>Eficiencia:</span> <strong id="serve-efficiency">0.0%</strong></div>
+            </div>
+            <!-- Contenedor para los Gráficos de Torta -->
+            <div class="chart-card">
+                <h3>Desglose de Saques por Jugador</h3>
+                <div id="serve-charts-container" class="charts-grid-container">
+                    <p class="chart-placeholder">Introduce el número de un jugador en la tabla para ver su gráfico.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nueva Sección de Explicación -->
+        <div class="stats-explanation-card">
+            <h3>¿Cómo funciona el sistema de estadísticas de saque?</h3>
+            <p>Cada saque se clasifica para medir su impacto real en el juego. Utiliza los siguientes códigos en la columna "Resultado":</p>
+            <div class="explanation-item">
+                <h4><span class="code">++</span> (Ace)</h4>
+                <p>Punto directo. El saque resulta en un punto inmediato para tu equipo.</p>
+            </div>
+            <div class="explanation-item">
+                <h4><span class="code">+</span> (Positivo)</h4>
+                <p>El equipo rival recibe mal y se ve forzado a devolver una pelota fácil, impidiendo que organicen un ataque rápido y estructurado.</p>
+            </div>
+            <div class="explanation-item">
+                <h4><span class="code">/</span> (Neutral)</h4>
+                <p>El rival recibe la pelota correctamente y puede organizar su ataque con todas sus opciones disponibles.</p>
+            </div>
+            <div class="explanation-item">
+                <h4><span class="code">-</span> (Error)</h4>
+                <p>El saque termina en error, ya sea golpeando la red o saliendo fuera de los límites de la cancha.</p>
+            </div>
+        </div>
+    </div>
+            <!-- Fin SAQUE -->
+
+            <!-- RECEPCION -->
+    <div id="Recepcion" class="tab-content">
+        <div class="stats-header">
+            <h2>Hoja 2: Análisis de Recepción</h2>
+            <div class="tooltip">
+                <span class="info-icon">ⓘ</span>
+                <div class="tooltip-text">
+                    <strong>Instrucciones - Calidad de Recepción:</strong><br>
+                    - <strong>3</strong> = Perfecta (Armador no se mueve)<br>
+                    - <strong>2</strong> = Buena (Armador se desplaza poco)<br>
+                    - <strong>1</strong> = Mala (Solo opción de balón alto)<br>
+                    - <strong>0</strong> = Error (Punto directo del rival)
+                </div>
+            </div>
+        </div>
+
+        <div class="table-controls">
+            <button id="add-reception-row" class="btn btn-primary">Añadir Fila</button>
+            <button id="clear-reception-data" class="btn btn-danger">Limpiar Datos</button>
+            <button id="export-reception-csv" class="btn btn-secondary">Exportar a CSV</button>
+        </div>
+
+        <div class="stats-table-container">
+            <table id="reception-table">
+                <thead>
+                    <tr>
+                        <th># Jugador</th>
+                        <th>Rotación</th>
+                        <th>Calidad (0-3)</th>
+                        <th>Borrar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Las filas se generarán con JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="stats-summary-grid">
+            <!-- Resumen de Totales -->
+            <div class="summary-card">
+                <h3>Resumen de Recepción</h3>
+                <div class="summary-item"><span>Perfectas (3):</span> <strong id="reception-perfect">0</strong></div>
+                <div class="summary-item"><span>Buenas (2):</span> <strong id="reception-good">0</strong></div>
+                <div class="summary-item"><span>Malas (1):</span> <strong id="reception-bad">0</strong></div>
+                <div class="summary-item"><span>Errores (0):</span> <strong id="reception-errors">0</strong></div>
+                <div class="summary-item total"><span>Total Recepciones:</span> <strong id="reception-total">0</strong></div>
+                <div class="summary-item efficiency"><span>Eficiencia:</span> <strong id="reception-efficiency">0.00</strong></div>
+            </div>
+            <!-- Contenedor para los Gráficos de Torta -->
+            <div class="chart-card">
+                <h3>Desglose de Recepción por Jugador</h3>
+                <div id="reception-charts-container" class="charts-grid-container">
+                    <p class="chart-placeholder">Introduce el número de un jugador en la tabla para ver su gráfico.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Explicación -->
+        <div class="stats-explanation-card">
+            <h3>¿Cómo se mide la calidad de la recepción?</h3>
+            <p>La recepción es el primer toque y fundamental para construir el ataque (Complejo 1). Se evalúa en una escala de 0 a 3 según la calidad del pase al armador.</p>
+            <div class="explanation-item">
+                <h4><span class="code">3</span> (Recepción Perfecta)</h4>
+                <p>El pase es perfecto. El armador recibe la pelota en la frente, sin moverse, y tiene todas las opciones de ataque disponibles (rápidos al centro, puntas, etc.).</p>
+            </div>
+            <div class="explanation-item">
+                <h4><span class="code">2</span> (Recepción Buena)</h4>
+                <p>El pase es ligeramente impreciso. El armador debe desplazarse un poco, pero aún puede organizar un ataque rápido y efectivo.</p>
+            </div>
+            <div class="explanation-item">
+                <h4><span class="code">1</span> (Recepción Mala)</h4>
+                <p>El pase está muy alejado del armador. La única opción viable es levantar un balón alto y predecible a los atacantes de las puntas.</p>
+            </div>
+            <div class="explanation-item">
+                <h4><span class="code">0</span> (Error)</h4>
+                <p>Error directo en la recepción que resulta en un punto para el equipo contrario.</p>
+            </div>
+        </div>
+    </div>
+            <!-- Fin RECEPCION -->
+
+
+            <!-- Ataque -->
+    <div id="Ataque" class="tab-content">
+        <div class="stats-header">
+            <h2>Hoja 3: Análisis de Ataque (K1 y K2)</h2>
+            <div class="tooltip">
+                <span class="info-icon">ⓘ</span>
+                <div class="tooltip-text">
+                    <strong>Instrucciones:</strong><br>
+                    - <strong>Complejo:</strong> K1 (primer ataque tras recepción), K2 (contraataque).<br>
+                    - <strong>Zona Origen:</strong> Desde donde ataca (4, 3, 2, Z=Zaguero).<br>
+                    - <strong>Resultado:</strong><br>
+                    &nbsp;&nbsp;<strong>+</strong> = Punto (Kill)<br>
+                    &nbsp;&nbsp;<strong>/</strong> = Continuación (Rival defiende)<br>
+                    &nbsp;&nbsp;<strong>-</strong> = Error (Fuera o red)<br>
+                    &nbsp;&nbsp;<strong>B</strong> = Bloqueado por el rival
+                </div>
+            </div>
+        </div>
+
+        <div class="table-controls">
+            <button id="add-attack-row" class="btn btn-primary">Añadir Fila</button>
+            <button id="clear-attack-data" class="btn btn-danger">Limpiar Datos</button>
+            <button id="export-attack-csv" class="btn btn-secondary">Exportar a CSV</button>
+        </div>
+
+        <div class="stats-table-container">
+            <table id="attack-table">
+                <thead>
+                    <tr>
+                        <th># Jugador</th>
+                        <th>Rotación</th>
+                        <th>Complejo (K1/K2)</th>
+                        <th>Zona Origen</th>
+                        <th>Resultado</th>
+                        <th>Borrar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Las filas se generarán con JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="stats-summary-grid">
+            <!-- Resumen de Totales -->
+            <div class="summary-card">
+                <h3>Resumen de Ataque</h3>
+                <div class="summary-item"><span>Puntos (+):</span> <strong id="attack-points">0</strong></div>
+                <div class="summary-item"><span>Errores (-):</span> <strong id="attack-errors">0</strong></div>
+                <div class="summary-item"><span>Bloqueados (B):</span> <strong id="attack-blocked">0</strong></div>
+                <div class="summary-item total"><span>Total Ataques:</span> <strong id="attack-total">0</strong></div>
+                <div class="summary-item efficiency"><span>Eficiencia:</span> <strong id="attack-efficiency">0.0%</strong></div>
+            </div>
+            <!-- Contenedor para los Gráficos de Torta -->
+            <div class="chart-card">
+                <h3>Desglose de Ataque por Jugador</h3>
+                <div id="attack-charts-container" class="charts-grid-container">
+                    <p class="chart-placeholder">Introduce el número de un jugador en la tabla para ver su gráfico.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Explicación -->
+        <div class="stats-explanation-card">
+            <h3>¿Cómo se evalúa el ataque?</h3>
+            <p>El ataque es la acción de finalización. Se evalúa su resultado y se diferencia si ocurre en una situación de K1 (salida de recepción) o K2 (contraataque).</p>
+            <div class="explanation-item">
+                <h4><span class="code">+</span> (Punto / Kill)</h4>
+                <p>El ataque resulta en un punto directo para tu equipo.</p>
+            </div>
+            <div class="explanation-item">
+                <h4><span class="code">/</span> (Continuación)</h4>
+                <p>El equipo rival logra defender el ataque y el punto continúa en juego.</p>
+            </div>
+            <div class="explanation-item">
+                <h4><span class="code">-</span> (Error)</h4>
+                <p>Error no forzado en el ataque. La pelota golpea la red o sale fuera de los límites de la cancha.</p>
+            </div>
+            <div class="explanation-item">
+                <h4><span class="code">B</span> (Bloqueado)</h4>
+                <p>El ataque es bloqueado por el rival, resultando en un punto para ellos.</p>
+            </div>
+        </div>
+    </div>
+            <!--Fin Ataque -->
+
+            <!-- Bloqueo -->
+         <div id="Bloqueo" class="tab-content">
+            <h2>Hoja 4: Bloqueo (En construcción)</h2>
+        </div>
+            <!-- Fin Bloqueo -->
+
+            <!-- K1 -->
+         <div id="K1" class="tab-content">
+            <h2>Hoja 5: Análisis K-1 (En construcción)</h2>
+        </div>
+            <!-- Fin K1 -->
+
+            <!-- K2 -->
+         <div id="K2" class="tab-content">
+            <h2>Hoja 6: Análisis K-2 (En construcción)</h2>
+        </div>
+            <!-- Fin K2 -->
+    </main>
+    
+    <footer class="main-footer">
+        <div class="container footer-content">
+             <div class="footer-logo">
+                <img src="../assets/logo.png" alt="FlyHigh Logo Footer">
+            </div>
+            <div class="footer-info">
+                <p><strong>Información de Contacto:</strong></p>
+                <p>Email: contacto@flyhighvoley.com</p>
+                <p>Redes Sociales: @flyhighvoley</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 FlyHigh. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="../javascript/estadisticas.js"></script>
+    <script src="../javascript/script.js"></script> <!-- Script original para el menú -->
+</body>
+</html>
