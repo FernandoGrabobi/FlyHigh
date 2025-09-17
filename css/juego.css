@@ -1,0 +1,138 @@
+/* Archivo: css/juego.css */
+
+body {
+    background-color: #eef2f7;
+}
+
+.game-wrapper {
+    max-width: 900px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* MARCADOR */
+#scoreboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: var(--font-primary);
+}
+.team-score { display: flex; align-items: center; gap: 15px; }
+.points { font-size: 2.5rem; font-weight: 700; }
+.sets { display: flex; gap: 5px; }
+.set-icon { width: 15px; height: 15px; border-radius: 50%; background: #555; }
+.set-icon.won { background: var(--accent-color); }
+.game-info { text-align: center; }
+.game-info span { display: block; }
+
+/* CANCHA Y ANIMACIONES */
+#court-container {
+    padding: 10px;
+    background-color: #333;
+    border-radius: 5px;
+    margin: 20px auto;
+}
+#court {
+    background: #4A90E2;
+    border: 3px solid white;
+    height: 400px;
+    position: relative;
+    overflow: hidden;
+}
+.net {
+    height: 4px; background: white; position: absolute;
+    top: 50%; left: 0; right: 0;
+    transform: translateY(-50%); z-index: 10;
+}
+.court-half {
+    flex: 1; position: relative;
+    border-bottom: 2px dashed rgba(255,255,255,0.5); /* Linea de 3 metros */
+}
+.rival-half { border-bottom: none; border-top: 2px dashed rgba(255,255,255,0.5); }
+
+/* JUGADORES Y PELOTA */
+.player {
+    width: 35px; height: 35px; position: absolute;
+    background-size: contain; background-repeat: no-repeat;
+    transition: transform 0.3s ease;
+}
+.p-player { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><circle cx="25" cy="15" r="10" fill="%23415A77"/><path d="M10 25 H 40 L 30 50 H 20 Z" fill="%23415A77"/></svg>');}
+.p-rival { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><circle cx="25" cy="15" r="10" fill="%23D9534F"/><path d="M10 25 H 40 L 30 50 H 20 Z" fill="%23D9534F"/></svg>');}
+
+/* Posiciones */
+.player-half #p-player-4 { top: 30px; left: 15%; }
+.player-half #p-player-3 { top: 30px; left: 50%; transform: translateX(-50%); }
+.player-half #p-player-2 { top: 30px; right: 15%; }
+.player-half #p-player-5 { bottom: 30px; left: 15%; }
+.player-half #p-player-6 { bottom: 30px; left: 50%; transform: translateX(-50%); }
+.player-half #p-player-1 { bottom: 30px; right: 15%; }
+.rival-half #p-rival-2 { bottom: 30px; left: 15%; }
+.rival-half #p-rival-1 { bottom: 30px; left: 50%; transform: translateX(-50%); }
+.rival-half #p-rival-6 { bottom: 30px; right: 15%; }
+.rival-half #p-rival-3 { top: 30px; left: 50%; transform: translateX(-50%); }
+.rival-half #p-rival-4 { top: 30px; right: 15%; }
+.rival-half #p-rival-5 { top: 30px; left: 15%; }
+
+#ball {
+    width: 20px; height: 20px; background-color: #FFEB3B;
+    border: 1px solid #333; border-radius: 50%;
+    position: absolute; opacity: 0;
+}
+
+/* KEYFRAMES PARA ANIMACIONES */
+@keyframes serve-ball-player {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(-100px, -220px) scale(0.5); opacity: 1; }
+}
+@keyframes serve-ball-ai {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(100px, 220px) scale(0.5); opacity: 1; }
+}
+@keyframes attack-ball {
+    0% { transform: translate(0, -30px) scale(1.2); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(0.5); opacity: 1; }
+}
+@keyframes land-ball {
+    0% { transform: scale(0.7); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+@keyframes jump {
+    50% { transform: translateY(-20px) scale(1.1); }
+}
+.is-jumping { animation: jump 0.6s ease-in-out; }
+
+/* CONTROLES */
+#game-controls { background: #f0f0f0; padding: 15px; border-radius: 8px; }
+#message-log { min-height: 50px; font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+#decision-panel { display: flex; justify-content: center; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+#decision-panel button, #special-abilities button { padding: 12px 25px; font-size: 1rem; font-weight: 700; border-radius: 5px; border: 2px solid var(--secondary-color); background: white; cursor: pointer; transition: all 0.2s; }
+#decision-panel button:hover, #special-abilities button:hover { background: var(--secondary-color); color: white; transform: translateY(-2px); }
+#special-abilities { margin-top: 10px; display: flex; justify-content: center; gap: 15px; }
+#special-abilities button { border-color: var(--accent-color); animation: glow 1.5s infinite alternate; }
+@keyframes glow { from { box-shadow: 0 0 5px var(--accent-color); } to { box-shadow: 0 0 20px var(--accent-color); } }
+
+/* CONSEJO */
+#consejo-box { margin-top: 20px; padding: 15px; background: #eef2f7; border-left: 5px solid var(--accent-color); }
+
+/* MODAL */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 2000; }
+.modal-content { background: white; padding: 40px; border-radius: 10px; text-align: center; max-width: 500px; }
+#level-selection { margin: 20px 0; display: flex; flex-direction: column; gap: 10px; }
+.btn-level, #modal-button { width: 100%; padding: 15px; font-size: 1.1rem; background: var(--primary-color); color: white; border: none; cursor: pointer; border-radius: 5px; }
+.btn-level:hover { background: var(--secondary-color); }
+.btn-level.selected { background-color: var(--accent-color); }
+
+/* SECCIÓN DE EXPLICACIÓN */
+.game-explanation { margin-top: 30px; padding: 30px; background-color: white; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); max-width: 900px; }
+.game-explanation h2 { font-family: var(--font-primary); text-align: center; margin-bottom: 20px; }
+.game-explanation h4 { font-family: var(--font-primary); margin-top: 20px; margin-bottom: 10px; }
+.game-explanation ul { list-style: none; padding-left: 0; }
+.game-explanation li { padding-left: 20px; position: relative; margin-bottom: 8px; }
+.game-explanation li::before { content: '🏐'; position: absolute; left: 0; }
