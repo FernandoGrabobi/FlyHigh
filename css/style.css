@@ -20,7 +20,15 @@ body { font-family: var(--font-secondary); background-color: var(--background-co
 .mobile-menu-toggle { display: none; font-size: 24px; background: none; border: none; cursor: pointer; }
 
 /* --- Hero Section & Main Sections --- */
-.hero-section { background-image: linear-gradient(rgba(13, 27, 42, 0.7), rgba(13, 27, 42, 0.7)), url('https://images.unsplash.com/photo-1521537634582-7a2d6a591321?auto=format&fit=crop&w=1950&q=80'); background-size: cover; background-position: center; color: white; text-align: center; padding: 120px 20px; }
+.hero-section {
+    
+    background-image: linear-gradient(rgba(13, 27, 42, 0.7), rgba(13, 27, 42, 0.7)), url('../assets/pelotaVoley.jpg');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-align: center;
+    padding: 120px 20px;
+}
 .hero-content h1 { font-family: var(--font-primary); font-size: 3.5rem; margin-bottom: 20px; }
 .hero-content p { font-size: 1.2rem; max-width: 700px; margin: 0 auto 30px; }
 .cta-button { background-color: var(--accent-color); color: var(--primary-color); padding: 15px 30px; text-decoration: none; font-weight: 700; border-radius: 5px; transition: transform 0.3s, box-shadow 0.3s; }
@@ -273,11 +281,127 @@ body { font-family: var(--font-secondary); background-color: var(--background-co
     height: 1.2em; /* Para evitar que el layout salte */
 }
 
-/* --- Estilo para las imágenes de diagramas extraídas del PDF --- */
+
 .rules-diagram img {
     width: 100%;
     height: auto;
-    display: block; /* Evita espacios extra debajo de la imagen */
+    display: block; 
     border-radius: 5px;
     border: 1px solid #e0e1dd;
+}
+
+/* --- Estilos para los fondos de las tarjetas de sección --- */
+
+
+#estadisticas,
+#sobrevoley {
+    background-size: cover;
+    background-position: center;
+    color: white; /* Cambia el color del texto por defecto a blanco para que sea legible */
+    position: relative; /* Necesario para el overlay */
+    z-index: 1;
+}
+
+/* Overlay oscuro para asegurar que el texto sea legible */
+#estadisticas::before,
+#sobrevoley::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(13, 27, 42, 0.8); /* Azul oscuro con 80% de opacidad */
+    border-radius: 8px; /* Mismo redondeo que la tarjeta original */
+    z-index: -1;
+}
+
+
+/* Imagen específica para la tarjeta de Estadísticas */
+#estadisticas {
+    background-image: url('../assets/fotoEstadistica.jpg');
+}
+/* Imagen específica para la tarjeta de SobreVoley */
+#sobrevoley {
+    background-image: url('../assets/canchaVoley.jpg');
+}
+
+/* Ajustar el color de los elementos internos para que sean legibles */
+#estadisticas h2,
+#estadisticas p,
+#sobrevoley h2,
+#sobrevoley p {
+    color: white;
+}
+
+/* Estilo de "botón fantasma" para que destaque sobre el fondo oscuro */
+#estadisticas a,
+#sobrevoley a {
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+}
+
+#estadisticas a:hover,
+#sobrevoley a:hover {
+    background-color: white;
+    color: var(--primary-color);
+}
+/* --- Estilos para los fondos de las tarjetas de Tienda y Próximamente --- */
+
+/* Estilo base para las tarjetas con imagen de fondo */
+#tienda,
+#proximamente {
+    background-size: cover;
+    background-position: center;
+    color: white; /* Cambia el color del texto por defecto a blanco */
+    position: relative;
+    z-index: 1;
+}
+
+/* Overlay oscuro para asegurar que el texto sea legible */
+#tienda::before,
+#proximamente::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(13, 27, 42, 0.8); /* Azul oscuro con 80% de opacidad */
+    border-radius: 8px; /* Mismo redondeo que la tarjeta original */
+    z-index: -1;
+}
+
+
+/* Imagen específica para la tarjeta de Tienda */
+#tienda {
+    background-image: url('../assets/tienda.jpg');
+}
+
+/* Imagen específica para la tarjeta de Próximamente */
+#proximamente {
+    background-image: url('../assets/juegoVoley.jpg');
+}
+
+/* Ajustar el color de los elementos internos para que sean legibles */
+#tienda h2,
+#tienda p,
+#proximamente h2,
+#proximamente p {
+    color: white;
+}
+
+/* Estilo de "botón fantasma" para que destaque sobre el fondo oscuro */
+#tienda a,
+#proximamente a {
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+}
+
+#tienda a:hover,
+#proximamente a:hover {
+    background-color: white;
+    color: var(--primary-color);
 }
