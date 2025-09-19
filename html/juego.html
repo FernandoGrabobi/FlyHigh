@@ -14,73 +14,39 @@
 
     <header class="main-header">
         <div class="container">
-            <a href="../index.html" class="logo-link">
-                <img src="../assets/logo.png" alt="FlyHigh Logo" class="logo">
-            </a>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="estadisticas.html">Estadísticas</a></li>
-                    <li><a href="sobrevoley.html">SobreVoley</a></li>
-                    <li><a href="#">Tienda</a></li>
-                    <li><a href="juego.html">Próximamente</a></li>
-                </ul>
-            </nav>
+            <a href="../index.html" class="logo-link"> <img src="../assets/logo.png" alt="FlyHigh Logo" class="logo"> </a>
+            <nav class="main-nav"> <ul> <li><a href="estadisticas.html">Estadísticas</a></li> <li><a href="sobrevoley.html">SobreVoley</a></li> <li><a href="#">Tienda</a></li> <li><a href="juego.html">Juego</a></li> </ul> </nav>
         </div>
     </header>
 
     <main>
         <div class="game-wrapper">
-            <!-- Marcador -->
             <div id="scoreboard">
-                <div class="team-score">
-                    <span id="player-team-name">JUGADOR</span>
-                    <div id="player-sets" class="sets"></div>
-                    <span id="player-points" class="points">0</span>
-                </div>
-                <div class="game-info">
-                    <span>SET</span>
-                    <span id="current-set">1</span>
-                </div>
-                <div class="team-score">
-                    <span id="ai-team-name">RIVAL</span>
-                    <div id="ai-sets" class="sets"></div>
-                    <span id="ai-points" class="points">0</span>
-                </div>
+                <div class="team-score"> <span>JUGADOR</span> <div id="player-sets" class="sets"></div> <span id="player-points" class="points">0</span> </div>
+                <div class="game-info"> <span>SET</span> <span id="current-set">1</span> </div>
+                <div class="team-score"> <span>RIVAL</span> <div id="ai-sets" class="sets"></div> <span id="ai-points" class="points">0</span> </div>
             </div>
 
-            <!-- Cancha de Juego -->
-             <div id="court-container">
+            <div id="court-container">
                 <div id="court">
-                    <div class="court-half rival-half">
-                        <div class="player p-rival" id="p-rival-4"></div><div class="player p-rival" id="p-rival-3"></div><div class="player p-rival" id="p-rival-2"></div>
-                        <div class="player p-rival" id="p-rival-5"></div><div class="player p-rival" id="p-rival-6"></div><div class="player p-rival" id="p-rival-1"></div>
-                    </div>
-                    <div class="net"></div>
-                    <div class="court-half player-half">
-                        <div class="player p-player" id="p-player-4"></div><div class="player p-player" id="p-player-3"></div><div class="player p-player" id="p-player-2"></div>
-                        <div class="player p-player" id="p-player-5"></div><div class="player p-player" id="p-player-6"></div><div class="player p-player" id="p-player-1"></div>
-                    </div>
-                    <div id="ball"></div>
+                    <!-- El visor de imágenes que reemplaza las animaciones -->
+                    <img id="court-image" src="https://i.imgur.com/8sM2B7c.png" alt="Visualización táctica del juego">
                 </div>
             </div>
 
-             <!-- Log de Mensajes y Decisiones -->
             <div id="game-controls">
                 <div id="message-log">Elige un nivel para comenzar.</div>
                 <div id="decision-panel"></div>
-                <div id="special-abilities"></div>
             </div>
 
-            <!-- Consejo del Especialista -->
             <div id="consejo-box">
                 <p><strong>Consejo del Especialista:</strong></p>
-                <span id="consejo-text">¡Presta atención a las rotaciones del rival para encontrar sus puntos débiles!</span>
+                <span id="consejo-text">¡El voleibol es un juego de estrategia! Piensa dos pasos por delante.</span>
             </div>
         </div>
         
-        <!-- Nueva Sección de Explicación -->
         <section class="game-explanation container">
-            <h2>¿Qué es Voleibol Táctico Rápido?</h2>
+             <h2>¿Qué es Voleibol Táctico Rápido?</h2>
             <p>Este no es un juego de reflejos, sino de inteligencia. En lugar de controlar el movimiento, tomas las <strong>decisiones cruciales</strong> en los momentos clave de cada punto. Tu objetivo es leer la estrategia del rival y elegir la mejor opción para llevar a tu equipo a la victoria.</p>
             <h4>¿Cómo Funciona?</h4>
             <ul>
@@ -88,13 +54,11 @@
                 <li><strong>Fase de Defensa:</strong> Cuando el rival ataca, debes elegir cómo posicionar tu bloqueo para detenerlo. ¡Lee su intención!</li>
                 <li><strong>Fase de Ataque:</strong> Tras una buena recepción o defensa, es tu turno de atacar. Elige entre un remate potente a la línea, a la diagonal o un toque suave para sorprenderlos.</li>
             </ul>
-            <p>¡Gana 2 sets para ganar el partido! A medida que subes de nivel, la IA se volverá más astuta y comenzará a leer tus jugadas. ¡Buena suerte!</p>
         </section>
     </main>
     
-    <!-- Modal de Inicio / Fin de Juego -->
     <div id="game-modal" class="modal-overlay">
-        <div class="modal-content">
+         <div class="modal-content">
             <h2 id="modal-title">Voleibol Táctico Rápido</h2>
             <p id="modal-text">Selecciona la dificultad del rival para empezar el partido.</p>
             <div id="level-selection">
