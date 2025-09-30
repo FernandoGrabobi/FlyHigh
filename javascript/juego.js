@@ -1,4 +1,4 @@
-// Archivo: javascript/juego.js (Versión Final y Definitiva con Imágenes Locales)
+// Archivo: javascript/juego.js (Versión con Lógica de Imágenes de Defensa Corregida)
 document.addEventListener('DOMContentLoaded', () => {
     // --- REFERENCIAS AL DOM ---
     const dom = {
@@ -13,16 +13,18 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     let gameState = {};
 
-    // --- DICCIONARIO DE IMÁGENES (APUNTANDO A TUS ARCHIVOS LOCALES) ---
+    // --- DICCIONARIO DE IMÁGENES (CON TUS NUEVAS IMÁGENES AÑADIDAS) ---
     const basePath = '../assets/game-images/';
     const gameImages = {
-        NEUTRAL:         basePath + 'cancha_neutral.jpg', 
-        RIVAL_RECIBIENDO:basePath + 'rival_recibiendo.png',
-        SERVE_ACE:       basePath + 'saque_ace.png',
-        SERVE_ERROR:     basePath + 'saque_error.png',
-        ATTACK_BLOCKED:  basePath + 'ataque_bloqueado.png',
-        DEFEND_SUCCESS:  basePath + 'bloque_exitoso.png',
-        DEFEND_FAIL:     basePath + 'ataque_linea.png'
+        NEUTRAL:               basePath + 'cancha_neutral.jpg',
+        RIVAL_RECIBIENDO:      basePath + 'rival_recibiendo.png',
+        SERVE_ACE:             basePath + 'saque_ace.png',
+        SERVE_ERROR:           basePath + 'saque_error.png',
+        ATTACK_BLOCKED:        basePath + 'ataque_bloqueado.png',
+        DEFEND_SUCCESS:        basePath + 'bloqueo_exitoso.png',
+        DEFEND_FAIL_LINEA:     basePath + 'ataque_linea.png', 
+        ATTACK_DIAGONAL_RIVAL: basePath + 'ataque_diagonal_rival.png', 
+        ATTACK_TOQUE_RIVAL:    basePath + 'toque_rival.png'          
     };
 
     const consejos = { /* ... objeto de consejos sin cambios ... */ };
@@ -39,25 +41,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FASES DEL JUEGO CON LÓGICA CORREGIDA ---
     function handlePlayerServe(decision) {
         clearButtons();
-        // Muestra la imagen de la acción de saque que el jugador eligió
         let serveImagePath = '';
         if (decision === 'zone1') serveImagePath = basePath + 'saque_zona1.png';
         if (decision === 'zone5') serveImagePath = basePath + 'saque_zona5.png';
         if (decision === 'zone6') serveImagePath = basePath + 'saque_zona6.png';
         updateCourtImage(serveImagePath);
-        
         setTimeout(() => {
             const successChance = { zone1: 0.6, zone5: 0.8, zone6: 0.95 };
             if (Math.random() < successChance[decision]) {
-                logMessage('¡Gran saque!');
-                updateCourtImage(gameImages.SERVE_ACE);
+                logMessage('¡Gran saque!'); updateCourtImage(gameImages.SERVE_ACE);
                 setTimeout(playerDefensePhase, 1500);
             } else {
-                logMessage('Saque fallado...');
-                updateCourtImage(gameImages.SERVE_ERROR);
-                pointFor('ai');
+                logMessage('Saque fallado...'); updateCourtImage(gameImages.SERVE_ERROR); pointFor('ai');
             }
-        }, 1200); // Pausa para ver la acción
+        }, 1200);
     }
 
     function handlePlayerAttack(decision) {
@@ -74,9 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateCourtImage(pointImagePath);
             pointFor('player');
         } else {
-            logMessage('¡DEFENDIDO!');
-            updateCourtImage(gameImages.ATTACK_BLOCKED);
-            pointFor('ai');
+            logMessage('¡DEFENDIDO!'); updateCourtImage(gameImages.ATTACK_BLOCKED); pointFor('ai');
         }
     }
 
@@ -86,12 +81,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const outcomes = { line: { line: true, cross: false, tip: false }, cross: { line: false, cross: true, tip: false }, read: { line: false, cross: false, tip: true } };
         
         if (outcomes[decision][aiAttack]) {
-            logMessage('¡DEFENSA PERFECTA!');
-            updateCourtImage(gameImages.DEFEND_SUCCESS);
+            logMessage('¡DEFENSA PERFECTA!'); updateCourtImage(gameImages.DEFEND_SUCCESS);
             setTimeout(playerReceptionAndAttackPhase, 1500);
         } else {
             logMessage('Punto para el rival.');
-            updateCourtImage(gameImages.DEFEND_FAIL);
+            // LÓGICA CORREGIDA PARA MOSTRAR LA ACCIÓN CORRECTA DEL RIVAL
+            if (aiAttack === 'line') {
+                updateCourtImage(gameImages.DEFEND_FAIL_LINEA);
+            } else if (aiAttack === 'cross') {
+                updateCourtImage(gameImages.ATTACK_DIAGONAL_RIVAL);
+            } else { // aiAttack es 'tip'
+                updateCourtImage(gameImages.ATTACK_TOQUE_RIVAL);
+            }
             pointFor('ai');
         }
     }
