@@ -171,6 +171,29 @@
 .btn-email { background-color: #777; }
 .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
 
+/* --- Estilos para Botón de Volver y WhatsApp --- */
+
+/* Estilo para el enlace de Volver a la Tienda */
+.back-to-shop {
+    display: inline-block;
+    margin-top: 20px;
+    font-weight: 700;
+    color: var(--secondary-color);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.back-to-shop:hover {
+    opacity: 1;
+}
+
+/* Estilo para el botón de WhatsApp */
+.btn-whatsapp {
+    background-color: #25D366;
+}
+
+
 @media (max-width: 768px) {
     .product-detail-container {
         grid-template-columns: 1fr;
