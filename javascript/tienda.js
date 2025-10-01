@@ -4,6 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- BASE DE DATOS DE PRODUCTOS ---
     // Cada clave (ej. 'white-crow') debe ser única y coincidir con el enlace en tienda.html
     const products = {
+        'mystery-box': {
+            name: "Caja Secreta FlyHigh",
+            price: "$30.000",
+            description: "¡Desata la emoción con nuestra Mystery Box! Cada caja es una sorpresa única que contiene: 1) Una de nuestras camisetas de diseño exclusivo, elegida al azar. 2) Una figura coleccionable de un personaje de Haikyuu, impresa en resina de alta calidad. ¿Estás listo para la sorpresa?",
+            image: "../assets/ModelosTienda/Remeras/bannerMysteryBox.png"
+        },
         'white-crow': {
             name: "'white crow'",
             price: "$15.000",
