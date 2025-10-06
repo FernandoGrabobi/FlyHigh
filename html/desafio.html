@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafío de Sabiduría - FlyHigh</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/desafio.css">
+    <link rel="icon" href="../assets/logo.png" type="image/png">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <a href="../index.html" class="logo-link"> <img src="../assets/logo.png" alt="FlyHigh Logo" class="logo"> </a>
+            <nav class="main-nav"> <ul> 
+                <li><a href="./estadisticas.html">Estadísticas</a></li> 
+                <li><a href="./sobrevoley.html">SobreVoley</a></li> 
+                <li><a href="./tienda.html">Tienda</a></li> 
+                <li><a href="./juego.html">Juego</a></li> 
+                <li><a href="./desafio.html">Desafío</a></li> 
+            </ul> </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="challenge-container">
+            <!-- Nuevo div contenedor para el contenido -->
+            <div class="challenge-content">
+                <!-- PANTALLA DE INICIO -->
+                <div id="start-screen">
+                    <h1>Desafío de Sabiduría</h1>
+                    <p>Responde 20 preguntas aleatorias sobre voleibol. Tu puntuación se basará en las respuestas correctas y el tiempo. ¡Demuestra cuánto sabes y llega al Top 10!</p>
+                    <input type="text" id="nickname-input" placeholder="Escribe tu apodo aquí" maxlength="12">
+                    <button id="start-button">¡Comenzar Desafío!</button>
+                </div>
+
+                <!-- PANTALLA DE QUIZ -->
+                <div id="quiz-screen" style="display: none;">
+                    <div class="quiz-header">
+                        <span id="progress-text">Pregunta 1 / 20</span>
+                        <span id="timer">00:00</span>
+                    </div>
+                    <div id="question-container">
+                        <p id="question-text">Cargando pregunta...</p>
+                    </div>
+                    <div id="options-container"></div>
+                </div>
+
+                <!-- PANTALLA DE RESULTADOS -->
+                <div id="results-screen" style="display: none;">
+                    <h2 id="results-nickname">¡Felicidades!</h2>
+                    <div class="results-summary">
+                        <div class="result-item">Correctas <span id="results-correct">0 / 20</span></div>
+                        <div class="result-item">Tiempo <span id="results-time">00:00</span></div>
+                    </div>
+                    <h3>Puntuación Final</h3>
+                    <p id="final-score">0 Puntos</p>
+                    
+                    <div id="leaderboard">
+                        <h3>🏆 Top 10 Global (Maqueta)</h3>
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Posición</th>
+                                    <th>Jugador</th>
+                                    <th>Puntuación</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <button id="play-again-button" class="btn-details" style="margin-top: 30px;">Jugar de Nuevo</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="../javascript/desafio.js"></script>
+</body>
+</html>

@@ -384,6 +384,27 @@ body { font-family: var(--font-secondary); background-color: var(--background-co
     background-image: url('../assets/juegoVoley.jpg');
 }
 
+#desafio{
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+    color: white;
+    background-image: url('../assets/quiz/quiz.png');
+}
+#desafio a{
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+}
+#desafio a:hover {
+    background-color: white;
+    color: var(--primary-color);
+}
+#desafio h2,
+#desafio p {
+    color: white;
+}
+
 /* Ajustar el color de los elementos internos para que sean legibles */
 #tienda h2,
 #tienda p,

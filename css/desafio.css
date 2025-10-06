@@ -1,0 +1,87 @@
+/* Archivo: css/desafio.css (Versión Actualizada) */
+
+.challenge-container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    
+    
+  
+    position: relative;
+    background-image: url('../assets/canchaVoley.jpg');
+    background-size: cover;
+    background-position: center;
+    color: var(--primary-color); /* Asegura que el texto oscuro sea legible */
+}
+
+/* --- NUEVO: Overlay blanco semitransparente --- */
+.challenge-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.82); /* Overlay blanco para legibilidad */
+    border-radius: 10px;
+    z-index: 1;
+}
+
+/* --- NUEVO: Contenedor para que el contenido esté sobre el overlay --- */
+.challenge-content {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* --- Pantalla de Inicio (Sin cambios) --- */
+#start-screen h1 { font-family: var(--font-primary); font-size: 2.5rem; color: var(--primary-color); }
+#start-screen p { font-size: 1.1rem; color: var(--secondary-color); margin: 15px 0; }
+#nickname-input { width: 100%; padding: 15px; font-size: 1.2rem; text-align: center; border: 2px solid #ccc; border-radius: 5px; margin-top: 20px; }
+#start-button { width: 100%; padding: 15px; font-size: 1.2rem; font-weight: 700; margin-top: 15px; background: var(--accent-color); color: var(--primary-color); border: none; border-radius: 5px; cursor: pointer; transition: transform 0.2s; }
+#start-button:hover { transform: scale(1.02); }
+
+/* --- Pantalla del Quiz (Sin cambios) --- */
+.quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-family: var(--font-primary); font-weight: 700; }
+#progress-text, #timer { font-size: 1.2rem; background: #f0f0f0; padding: 5px 15px; border-radius: 5px; }
+#question-container { min-height: 100px; display: flex; align-items: center; justify-content: center; }
+#question-text { font-size: 1.4rem; font-weight: 700; margin-bottom: 30px; }
+#options-container { display: grid; grid-template-columns: 1fr; gap: 15px; }
+
+/* --- MODIFICADO: Botones de opción resaltados --- */
+.option-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1rem;
+    border: 2px solid var(--secondary-color);
+    background: white;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Sombra sutil */
+}
+.option-btn:hover:not(:disabled) {
+    background: var(--secondary-color);
+    color: white;
+    transform: translateY(-2px); /* Efecto de elevación */
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1); /* Sombra más pronunciada */
+}
+.option-btn.correct { background-color: #4CAF50 !important; color: white !important; border-color: #4CAF50 !important; }
+.option-btn.incorrect { background-color: #F44336 !important; color: white !important; border-color: #F44336 !important; }
+.option-btn:disabled { cursor: not-allowed; }
+
+/* --- Pantalla de Resultados y Leaderboard (Sin cambios) --- */
+#results-screen h2 { font-size: 2rem; }
+.results-summary { display: flex; justify-content: space-around; background: #f7f9fc; padding: 20px; border-radius: 8px; margin: 20px 0; }
+.result-item { font-size: 1.2rem; }
+.result-item span { display: block; font-weight: 700; font-size: 1.5rem; color: var(--accent-color); }
+#final-score { font-size: 2.5rem; margin: 20px 0; font-family: var(--font-primary); }
+#leaderboard { margin-top: 30px; } #leaderboard h3 { font-family: var(--font-primary); margin-bottom: 15px; }
+.leaderboard-table { width: 100%; border-collapse: collapse; }
+.leaderboard-table th, .leaderboard-table td { padding: 12px; border-bottom: 1px solid #ddd; }
+.leaderboard-table th { background: var(--primary-color); color: white; }
+.leaderboard-table tr:nth-child(even) { background: #f9f9f9; }
+.leaderboard-table .user-score { font-weight: 700; background: var(--accent-color) !important; color: var(--primary-color); }
