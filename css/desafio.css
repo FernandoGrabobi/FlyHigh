@@ -80,8 +80,24 @@
 .result-item span { display: block; font-weight: 700; font-size: 1.5rem; color: var(--accent-color); }
 #final-score { font-size: 2.5rem; margin: 20px 0; font-family: var(--font-primary); }
 #leaderboard { margin-top: 30px; } #leaderboard h3 { font-family: var(--font-primary); margin-bottom: 15px; }
-.leaderboard-table { width: 100%; border-collapse: collapse; }
-.leaderboard-table th, .leaderboard-table td { padding: 12px; border-bottom: 1px solid #ddd; }
-.leaderboard-table th { background: var(--primary-color); color: white; }
-.leaderboard-table tr:nth-child(even) { background: #f9f9f9; }
-.leaderboard-table .user-score { font-weight: 700; background: var(--accent-color) !important; color: var(--primary-color); }
+#leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left; 
+}
+#leaderboard-table th, #leaderboard-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+#leaderboard-table th {
+    background: var(--primary-color);
+    color: white;
+}
+#leaderboard-table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+#leaderboard-table .user-score {
+    font-weight: 700;
+    background: var(--accent-color) !important;
+    color: var(--primary-color);
+}

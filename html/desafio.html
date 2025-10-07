@@ -24,12 +24,11 @@
 
     <main>
         <div class="challenge-container">
-            <!-- Nuevo div contenedor para el contenido -->
             <div class="challenge-content">
                 <!-- PANTALLA DE INICIO -->
                 <div id="start-screen">
                     <h1>Desafío de Sabiduría</h1>
-                    <p>Responde 20 preguntas aleatorias sobre voleibol. Tu puntuación se basará en las respuestas correctas y el tiempo. ¡Demuestra cuánto sabes y llega al Top 10!</p>
+                    <p>Responde 20 preguntas aleatorias sobre voleibol. ¡Demuestra cuánto sabes y llega al Top 10 global!</p>
                     <input type="text" id="nickname-input" placeholder="Escribe tu apodo aquí" maxlength="12">
                     <button id="start-button">¡Comenzar Desafío!</button>
                 </div>
@@ -46,7 +45,7 @@
                     <div id="options-container"></div>
                 </div>
 
-                <!-- PANTALLA DE RESULTADOS -->
+             <!-- PANTALLA DE RESULTADOS -->
                 <div id="results-screen" style="display: none;">
                     <h2 id="results-nickname">¡Felicidades!</h2>
                     <div class="results-summary">
@@ -57,8 +56,8 @@
                     <p id="final-score">0 Puntos</p>
                     
                     <div id="leaderboard">
-                        <h3>🏆 Top 10 Global (Maqueta)</h3>
-                        <table class="leaderboard-table">
+                        <h3>🏆 Top 10 Global</h3>
+                        <table id="leaderboard-table">
                             <thead>
                                 <tr>
                                     <th>Posición</th>
@@ -66,7 +65,10 @@
                                     <th>Puntuación</th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody>
+                                <!-- Las filas se generarán con JavaScript desde la base de datos -->
+                                <tr><td colspan="3">Cargando puntuaciones...</td></tr>
+                            </tbody>
                         </table>
                     </div>
                     <button id="play-again-button" class="btn-details" style="margin-top: 30px;">Jugar de Nuevo</button>
@@ -74,7 +76,8 @@
             </div>
         </div>
     </main>
-    
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore-compat.js"></script>
     <script src="../javascript/desafio.js"></script>
 </body>
 </html>

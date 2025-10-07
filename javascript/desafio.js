@@ -1,21 +1,43 @@
-// Archivo: javascript/desafio.js (Versión con 100 preguntas)
-
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Referencias al DOM ---
+
+    // --- 1. CONFIGURACIÓN DE FIREBASE ---
+    // Pega aquí el código de 'firebaseConfig' que copiaste de tu proyecto
+    const firebaseConfig = {
+        apiKey: "AIzaSyCi9A3R_4OvRcJCtZBybSj_Y9BsFqRPuzs",
+        authDomain: "flyhigh-29fce.firebaseapp.com",
+        projectId: "flyhigh-29fce",
+        storageBucket: "flyhigh-29fce.firebasestorage.app",
+        messagingSenderId: "565003062555",
+        appId: "1:565003062555:web:b7ba8373393fbb61acd7be"
+    };
+
+
+
+    // --- INICIALIZACIÓN DE FIREBASE (NO MODIFICAR) ---
+    let db;
+    try {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+        console.log("ÉXITO: Firebase se ha inicializado correctamente.");
+    } catch (e) {
+        console.error("¡ERROR CRÍTICO DE CONEXIÓN! No se pudo inicializar Firebase. Revisa tus claves en 'firebaseConfig'.", e);
+        alert("ALERTA: No se pudo conectar a la base de datos del Top 10. Revisa la consola para más detalles (F12).");
+    }
+
+    // --- REFERENCIAS AL DOM ---
     const startScreen = document.getElementById('start-screen'), quizScreen = document.getElementById('quiz-screen'), resultsScreen = document.getElementById('results-screen');
     const nicknameInput = document.getElementById('nickname-input'), startButton = document.getElementById('start-button');
     const progressText = document.getElementById('progress-text'), timerEl = document.getElementById('timer');
     const questionText = document.getElementById('question-text'), optionsContainer = document.getElementById('options-container');
     const resultsNickname = document.getElementById('results-nickname'), resultsCorrect = document.getElementById('results-correct'), resultsTime = document.getElementById('results-time');
     const finalScoreEl = document.getElementById('final-score'), leaderboardBody = document.querySelector('#leaderboard-table tbody');
+    const playAgainButton = document.getElementById('play-again-button');
 
-    let currentQuizQuestions = [], currentQuestionIndex = 0, score = 0, timer, secondsElapsed = 0, nickname = '';
-
-    // --- BASE DE DATOS DE 100 PREGUNTAS ---
+   // --- Base de datos de 100 preguntas ---
     const allQuestions = [
         // NIVEL FÁCIL
         { question: "¿Cuál es la altura oficial de la red en la categoría masculina?", options: ["2,35 metros", "2,40 metros", "2,43 metros", "2,50 metros"], correct: 2 },
-        { question: "¿Cuántos toques puede dar un equipo antes de pasar el balón al campo contrario (sin contar el bloqueo)?", options: ["2 toques", "3 toques", "4 toques", "Ilimitados"], correct: 1 },
+        { question: "¿Cuántos toques puede dar un equipo antes de pasar el balón (sin contar el bloqueo)?", options: ["2 toques", "3 toques", "4 toques", "Ilimitados"], correct: 1 },
         { question: "¿Cómo se llama el jugador especialista en defensa que viste una camiseta de color diferente?", options: ["Capitán", "Opuesto", "Líbero", "Central"], correct: 2 },
         { question: "¿Cuántos jugadores hay en el campo por equipo?", options: ["5 jugadores", "6 jugadores", "7 jugadores", "11 jugadores"], correct: 1 },
         { question: "¿Con cuántos puntos se gana un set (excepto el set decisivo)?", options: ["15 puntos", "21 puntos", "25 puntos", "30 puntos"], correct: 2 },
@@ -115,17 +137,95 @@ document.addEventListener('DOMContentLoaded', () => {
         { question: "¿Qué es la 'disquinesia escapular' y por qué es relevante en el voleibol?", options: ["Un tipo de lesión en la rodilla", "Una alteración en el movimiento normal del omóplato (escápula), que puede aumentar el riesgo de lesiones en el hombro de los rematadores", "Una técnica de saque", "Un ejercicio de estiramiento"], correct: 1 },
         { question: "Si un jugador expulsado o descalificado no puede ser sustituido legal o excepcionalmente, ¿qué sucede?", options: ["El equipo juega con un jugador menos durante 3 puntos", "El equipo es declarado incompleto", "El entrenador puede entrar a jugar", "Se le permite al jugador reingresar"], correct: 1 },
         { question: "¿Cuál es la función del 'árbitro de reserva' en las competencias de la FIVB?", options: ["Reemplazar al segundo árbitro si es necesario y ayudar en diversas tareas de control", "Ser el anotador principal", "Ser un juez de línea adicional", "Controlar el tiempo de los intervalos"], correct: 0 },
-        { question: "¿En qué consiste la comunicación no verbal, qué porcentaje del tiempo se recomienda establecer contacto visual al hablar y al escuchar para ser asertivo?", options: ["100% al hablar, 0% al escuchar", "40% al hablar, 75% al escuchar", "75% al hablar, 40% al escuchar", "50% al hablar, 50% al escuchar"], correct: 1 },
+        { question: "¿En la comunicación no verbal, qué porcentaje del tiempo se recomienda establecer contacto visual al hablar y al escuchar para ser asertivo?", options: ["100% al hablar, 0% al escuchar", "40% al hablar, 75% al escuchar", "75% al hablar, 40% al escuchar", "50% al hablar, 50% al escuchar"], correct: 1 },
         { question: "Según el 'Modelo de rendimiento de equipo de 7 fases' de Drexler/Sibbet, ¿cuál es la fase que sigue a la 'Aclaración de objetivos / roles'?", options: ["Implementación", "Creación de confianza", "Compromiso, Toma de decisiones", "Alto rendimiento"], correct: 2 }
     ];
 
-    // --- Lógica del Juego ---
-    startButton.addEventListener('click', () => { nickname = nicknameInput.value.trim(); if (nickname.length >= 3 && nickname.length <= 12) { startGame(); } else { alert('Por favor, introduce un apodo de 3 a 12 caracteres.'); } });
+    let currentQuizQuestions = [], currentQuestionIndex = 0, score = 0, timer, secondsElapsed = 0, nickname = '';
+
     function startGame() { currentQuestionIndex = 0; score = 0; secondsElapsed = 0; currentQuizQuestions = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 20); startScreen.style.display = 'none'; resultsScreen.style.display = 'none'; quizScreen.style.display = 'block'; startTimer(); showNextQuestion(); }
     function startTimer() { timerEl.textContent = '00:00'; timer = setInterval(() => { secondsElapsed++; const minutes = Math.floor(secondsElapsed / 60).toString().padStart(2, '0'); const seconds = (secondsElapsed % 60).toString().padStart(2, '0'); timerEl.textContent = `${minutes}:${seconds}`; }, 1000); }
     function showNextQuestion() { if (currentQuestionIndex >= currentQuizQuestions.length) { endGame(); return; } const question = currentQuizQuestions[currentQuestionIndex]; progressText.textContent = `Pregunta ${currentQuestionIndex + 1} / 20`; questionText.textContent = question.question; optionsContainer.innerHTML = ''; question.options.forEach((option, index) => { const button = document.createElement('button'); button.className = 'option-btn'; button.textContent = option; button.dataset.index = index; button.addEventListener('click', handleAnswer); optionsContainer.appendChild(button); }); }
     function handleAnswer(event) { const selectedButton = event.target; const selectedIndex = parseInt(selectedButton.dataset.index); const correctIndex = currentQuizQuestions[currentQuestionIndex].correct; document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true); if (selectedIndex === correctIndex) { score++; selectedButton.classList.add('correct'); } else { selectedButton.classList.add('incorrect'); document.querySelector(`.option-btn[data-index="${correctIndex}"]`).classList.add('correct'); } currentQuestionIndex++; setTimeout(showNextQuestion, 1200); }
-    function endGame() { clearInterval(timer); quizScreen.style.display = 'none'; resultsScreen.style.display = 'block'; const finalScore = (score * 1000) - secondsElapsed; resultsNickname.textContent = `¡Felicidades, ${nickname}!`; resultsCorrect.textContent = `${score} / 20`; resultsTime.textContent = timerEl.textContent; finalScoreEl.textContent = `${finalScore} Puntos`; displayLeaderboard(nickname, finalScore); }
-    function displayLeaderboard(userNickname, userScore) { let leaderboardData = [ { nickname: 'VoleyPro', score: 19850 }, { nickname: 'Spiker', score: 19823 }, { nickname: 'LíberoKing', score: 18790 }, { nickname: 'SetterStar', score: 18754 }, { nickname: 'AceMaker', score: 17690 }, { nickname: 'DigMaster', score: 16650 }, { nickname: 'Rookie', score: 15600 }, { nickname: 'ElCentral', score: 14555 }, { nickname: 'FlyHighFan', score: 13500 }, { nickname: 'PlayerOne', score: 12450 } ]; leaderboardData.push({ nickname: userNickname, score: userScore }); leaderboardData.sort((a, b) => b.score - a.score); leaderboardData = leaderboardData.slice(0, 10); leaderboardBody.innerHTML = ''; leaderboardData.forEach((entry, index) => { const row = document.createElement('tr'); if (entry.nickname === userNickname && entry.score === userScore) { row.className = 'user-score'; } row.innerHTML = `<td>#${index + 1}</td><td>${entry.nickname}</td><td>${entry.score}</td>`; leaderboardBody.appendChild(row); }); }
-    document.getElementById('play-again-button').addEventListener('click', () => { resultsScreen.style.display = 'none'; startScreen.style.display = 'block'; nicknameInput.value = ''; });
+    
+  function endGame() {
+        clearInterval(timer);
+        quizScreen.style.display = 'none';
+        resultsScreen.style.display = 'block';
+        const finalScore = (score * 1000) - secondsElapsed;
+        resultsNickname.textContent = `¡Felicidades, ${nickname}!`;
+        resultsCorrect.textContent = `${score} / 20`;
+        resultsTime.textContent = timerEl.textContent;
+        finalScoreEl.textContent = `${finalScore} Puntos`;
+        submitAndShowScores(nickname, finalScore);
+    }
+
+    // --- LÓGICA DE LEADERBOARD CORREGIDA Y A PRUEBA DE FALLOS ---
+    async function submitAndShowScores(name, points) {
+        leaderboardBody.innerHTML = '<tr><td colspan="3">Cargando puntuaciones...</td></tr>';
+        
+        // Si la base de datos no se conectó, usa la maqueta y termina.
+        if (!db) {
+            console.warn("Firebase no está conectado. Mostrando tabla de clasificación de maqueta.");
+            renderLeaderboardWithMock(name, points);
+            return;
+        }
+
+        try {
+            // 1. Guarda la puntuación nueva
+            await db.collection('scores').add({
+                nickname: name,
+                score: points,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            console.log('ÉXITO: Puntuación guardada en Firebase.');
+
+            // 2. Lee el Top 10 de la base de datos
+            const snapshot = await db.collection('scores').orderBy('score', 'desc').limit(10).get();
+            let leaderboardData = [];
+            snapshot.forEach(doc => {
+                leaderboardData.push(doc.data());
+            });
+            console.log("ÉXITO: Datos del Top 10 recibidos de Firebase:", leaderboardData);
+            renderLeaderboard(leaderboardData, name, points);
+
+        } catch (error) {
+            console.error("¡ERROR DE FIREBASE! No se pudo guardar o leer la puntuación:", error);
+            leaderboardBody.innerHTML = '<tr><td colspan="3">Error al cargar la tabla.</td></tr>';
+            // Como fallback, muestra la maqueta
+            renderLeaderboardWithMock(name, points);
+        }
+    }
+
+    function renderLeaderboard(data, userNickname, userScore) {
+        const userInTop10 = data.some(entry => entry.nickname === userNickname && entry.score === userScore);
+        if (!userInTop10) { data.push({ nickname: userNickname, score: userScore }); }
+        data.sort((a, b) => b.score - a.score);
+        const top10 = data.slice(0, 10);
+
+        leaderboardBody.innerHTML = '';
+        top10.forEach((entry, index) => {
+            const row = document.createElement('tr');
+            if (entry.nickname === userNickname && entry.score === userScore) { row.className = 'user-score'; }
+            row.innerHTML = `<td>#${index + 1}</td><td>${entry.nickname}</td><td>${entry.score}</td>`;
+            leaderboardBody.appendChild(row);
+        });
+    }
+    
+    function renderLeaderboardWithMock(userNickname, userScore) {
+        let mockData = [ { nickname: 'VoleyPro', score: 19850 }, { nickname: 'Spiker', score: 19823 } ];
+        renderLeaderboard(mockData, userNickname, userScore);
+    }
+    
+    // --- Event Listeners (SIN CAMBIOS) ---
+    startButton.addEventListener('click', () => { nickname = nicknameInput.value.trim(); if (nickname.length >= 3 && nickname.length <= 12) { startGame(); } else { alert('Por favor, introduce un apodo de 3 a 12 caracteres.'); } });
+    playAgainButton.addEventListener('click', () => { resultsScreen.style.display = 'none'; startScreen.style.display = 'block'; nicknameInput.value = ''; });
+
+    // Rellenando las funciones que faltaban
+    function startGame() { currentQuestionIndex = 0; score = 0; secondsElapsed = 0; currentQuizQuestions = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 20); startScreen.style.display = 'none'; resultsScreen.style.display = 'none'; quizScreen.style.display = 'block'; startTimer(); showNextQuestion(); }
+    function startTimer() { timerEl.textContent = '00:00'; timer = setInterval(() => { secondsElapsed++; const minutes = Math.floor(secondsElapsed / 60).toString().padStart(2, '0'); const seconds = (secondsElapsed % 60).toString().padStart(2, '0'); timerEl.textContent = `${minutes}:${seconds}`; }, 1000); }
+    function showNextQuestion() { if (currentQuestionIndex >= currentQuizQuestions.length) { endGame(); return; } const question = currentQuizQuestions[currentQuestionIndex]; progressText.textContent = `Pregunta ${currentQuestionIndex + 1} / 20`; questionText.textContent = question.question; optionsContainer.innerHTML = ''; question.options.forEach((option, index) => { const button = document.createElement('button'); button.className = 'option-btn'; button.textContent = option; button.dataset.index = index; button.addEventListener('click', handleAnswer); optionsContainer.appendChild(button); }); }
+    function handleAnswer(event) { const selectedButton = event.target; const selectedIndex = parseInt(selectedButton.dataset.index); const correctIndex = currentQuizQuestions[currentQuestionIndex].correct; document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true); if (selectedIndex === correctIndex) { score++; selectedButton.classList.add('correct'); } else { selectedButton.classList.add('incorrect'); document.querySelector(`.option-btn[data-index="${correctIndex}"]`).classList.add('correct'); } currentQuestionIndex++; setTimeout(showNextQuestion, 1200); }
 });
+
+
