@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Configurar enlaces de contacto
             const emailBtn = document.getElementById('btn-email');
             const subject = encodeURIComponent(`Consulta por producto: ${product.name}`);
-            emailBtn.href = `mailto:flyhighelevateyourstyle@gmail.com?subject=${subject}`;
+                emailBtn.href = `mailto:flyhighelevateyourstyle@gmail.com?subject=${subject}`
             
             const instagramBtn = document.getElementById('btn-instagram');
             instagramBtn.href = 'https://www.instagram.com/flyhigh_elevateyourstyle/';
