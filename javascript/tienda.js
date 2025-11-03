@@ -142,14 +142,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // Configurar enlaces de contacto
             const emailBtn = document.getElementById('btn-email');
             const subject = encodeURIComponent(`Consulta por producto: ${product.name}`);
-            emailBtn.href = `mailto:tu-correo@flyhigh.com?subject=${subject}`;
+            emailBtn.href = `mailto:flyhighelevateyourstyle@gmail.com?subject=${subject}`;
             
             const instagramBtn = document.getElementById('btn-instagram');
-            instagramBtn.href = 'https://instagram.com/tu-usuario-flyhigh';
+            instagramBtn.href = 'https://www.instagram.com/flyhigh_elevateyourstyle/';
 
             const whatsappBtn = document.getElementById('btn-whatsapp');
             const whatsappText = encodeURIComponent(`¡Hola! Estoy interesado/a en el producto: ${product.name}`);
-            whatsappBtn.href = `https://wa.me/TU_NUMERO_AQUI?text=${whatsappText}`; // Reemplaza TU_NUMERO_AQUI
+            whatsappBtn.href = `https://wa.me/2657292663?text=${whatsappText}`; // Reemplaza TU_NUMERO_AQUI
             
         } else {
             productDetailContainer.innerHTML = '<h1>Producto no encontrado</h1><p>El producto que buscas no existe o ha sido movido.</p>';
